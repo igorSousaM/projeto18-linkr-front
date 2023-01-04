@@ -5,9 +5,11 @@ import { AuthContext } from "../../providers/Context";
 import { getSignup } from "../../servers/UserServices";
 
 export const Timeline = () => {
-  const { token, userInformation, setUserInformation } =
+  const { userInformation, setUserInformation } =
     React.useContext(AuthContext);
-    
+    let token = localStorage.getItem("tokenLikr");
+    token =  JSON.parse(token)
+    console.log(token);
   const config = {
     headers: {
       accept: "application/json",

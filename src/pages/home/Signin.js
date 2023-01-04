@@ -21,6 +21,7 @@ export const Signin = () => {
     user.then((response) => {
         const { token } = response.data;
         setToken(token);
+        localStorage.setItem("tokenLikr", JSON.stringify(token));
         navigate("/timeline");
       })
       .catch((error) => {
