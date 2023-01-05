@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Containner, ContainnerLeft, ContainnerRight, Signin } from './Signin'
-import { postSignup } from '../../servers/UserServices'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Containner, ContainnerLeft, ContainnerRight, Signin } from "./Signin";
+import { postSignup } from "../../servers/UserServices";
 
 export const Signup = () => {
   const [email, setEmail] = useState("");
@@ -17,14 +17,18 @@ export const Signup = () => {
   };
 
   const navigate = useNavigate();
-  function handleForm(e ) {
+  function handleForm(e) {
     e.preventDefault();
     const register = postSignup(signup);
-    register.then((response) => {
-      navigate("/");
-    }).catch((error) => {
-      console.log(error);
-    });
+    register
+      .then((response) => {
+        navigate("/");
+      })
+      .catch((error) => {
+          setOn('disabled')
+        const { response } = error;
+       alert(response.data) 
+      });
   }
   return (
     <Containner>
@@ -48,7 +52,7 @@ export const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-            <input
+          <input
             type="text"
             placeholder="username"
             onChange={(e) => setUsername(e.target.value)}
@@ -68,5 +72,5 @@ export const Signup = () => {
         </form>
       </ContainnerRight>
     </Containner>
-  )
-}
+  );
+};
