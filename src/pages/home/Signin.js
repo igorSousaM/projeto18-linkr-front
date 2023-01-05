@@ -23,6 +23,7 @@ export const Signin = () => {
         const { token } = response.data;
         setToken(token);
         localStorage.setItem("tokenLikr", JSON.stringify(token));
+        setArrow(true)
         navigate("/timeline");
       })
       .catch((error) => {
@@ -44,11 +45,13 @@ export const Signin = () => {
             type="email"
             placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <input
             type="password"
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
           <button on={on} type="submit"> Sign Up </button>
