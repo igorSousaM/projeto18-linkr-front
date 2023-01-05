@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Containner, ContainnerLeft, ContainnerRight, Signin } from "./Signin";
+import { Button, Containner, ContainnerLeft, ContainnerRight, Signin } from "./Signin";
 import { postSignup } from "../../servers/UserServices";
 
 export const Signup = () => {
@@ -20,14 +20,15 @@ export const Signup = () => {
   function handleForm(e) {
     e.preventDefault();
     const register = postSignup(signup);
+    setOn(true)
     register
       .then((response) => {
         navigate("/");
       })
       .catch((error) => {
-          setOn('disabled')
         const { response } = error;
        alert(response.data) 
+       setOn(false)
       });
   }
   return (
@@ -65,7 +66,7 @@ export const Signup = () => {
             required
           />
 
-          <button on={on} type="submit"> Sign Up </button>
+          <Button disabled={on} type="submit"> Sign Up </Button>
           <Link to={"/"}>
             <p>Switch back to log in</p>
           </Link>
