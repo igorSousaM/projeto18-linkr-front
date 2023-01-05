@@ -8,6 +8,7 @@ export const Signup = () => {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [photo, setPhoto] = useState("");
+  const [on, setOn ] = useState(false);
   const signup = {
     name: username,
     email: email,
@@ -60,8 +61,8 @@ export const Signup = () => {
             required
           />
 
-          <button type="submit"> Sign Up </button>
-          <Link to={'/'}>
+          <button on={on} type="submit"> Sign Up </button>
+          <Link to={"/"}>
             <p>Switch back to log in</p>
           </Link>
         </form>

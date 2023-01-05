@@ -4,9 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/Context";
 import { postSignin } from "../../servers/UserServices";
 export const Signin = () => {
-  const { token, setToken  } = React.useContext(AuthContext);
+  const { token, setToken, setArrow  } = React.useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [on, setOn ] = useState(false);
 
   const navigate = useNavigate();
   const signin = {
@@ -25,8 +26,8 @@ export const Signin = () => {
         navigate("/timeline");
       })
       .catch((error) => {
-        console.log(error);
-        //alert('email ou password invalid');
+          setOn('disabled')
+        alert('email ou password incorretos');
       });
   }
   return (
@@ -50,7 +51,7 @@ export const Signin = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button type="submit"> Sign Up </button>
+          <button on={on} type="submit"> Sign Up </button>
           <Link to={"/sign-up"}>
             <p>First time? Create an account!</p>
           </Link>
