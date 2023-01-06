@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Containner, ContainnerLeft, ContainnerRight, Signin } from './Signin'
-import { postSignup } from '../../servers/UserServices'
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Containner, ContainnerLeft, ContainnerRight, Signin } from "./Signin";
+import { postSignup } from "../../servers/UserServices";
 
 export const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [photo, setPhoto] = useState("");
+  const [on, setOn ] = useState(false);
   const signup = {
     name: username,
     email: email,
@@ -16,14 +17,19 @@ export const Signup = () => {
   };
 
   const navigate = useNavigate();
-  function handleForm(e ) {
+  function handleForm(e) {
     e.preventDefault();
     const register = postSignup(signup);
-    register.then((response) => {
-      navigate("/");
-    }).catch((error) => {
-      console.log(error);
-    });
+    setOn(true)
+    register
+      .then((response) => {
+        navigate("/");
+      })
+      .catch((error) => {
+        const { response } = error;
+       alert(response.data) 
+       setOn(false)
+      });
   }
   return (
     <Containner>
@@ -47,7 +53,7 @@ export const Signup = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-            <input
+          <input
             type="text"
             placeholder="username"
             onChange={(e) => setUsername(e.target.value)}
@@ -60,12 +66,12 @@ export const Signup = () => {
             required
           />
 
-          <button type="submit"> Sign Up </button>
-          <Link to={'/'}>
+          <Button disabled={on} type="submit"> Sign Up </Button>
+          <Link to={"/"}>
             <p>Switch back to log in</p>
           </Link>
         </form>
       </ContainnerRight>
     </Containner>
-  )
-}
+  );
+};
