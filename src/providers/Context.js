@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { getSignup } from "../servers/UserServices";
+import React, { useState } from "react";
 
 export const AuthContext = React.createContext({});
 

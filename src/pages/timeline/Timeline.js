@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { NavBar } from "../../components/nav/NavBar";
 import { AuthContext } from "../../providers/Context";
+import { postPosts } from "../../servers/PostsServices";
 import { getSignup } from "../../servers/UserServices";
 
 export const Timeline = () => {
-  const { setUserInformation, showArrowALl } = React.useContext(AuthContext);
+  const { userInformation, setUserInformation, showArrowALl } = React.useContext(AuthContext);
   let token = localStorage.getItem("tokenLikr");
   token = JSON.parse(token);
-
+  
+  const {photo} = userInformation;
   const config = {
     headers: {
       accept: "application/json",
@@ -27,10 +29,67 @@ export const Timeline = () => {
         console.log("error");
       });
   }, []);
+
+  const [link, setLink] = useState("");
+  const [text, setText] = useState("");
+  const [loadingState, setLoadingState] = useState(false);
+
+  function createPost(e) {
+    e.preventDefault();
+
+    setLoadingState(true);
+
+    const body = {
+      link,
+      text,
+    };
+
+    postPosts(body, config)
+      .then(() => {
+        setLoadingState(false);
+        setLink("");
+        setText("");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Houve um erro ao publicar seu link");
+        setLoadingState(false);
+      });
+  }
+
   return (
     <>
-      <NavBar/>
-      <ContainnerTimeline onClick={showArrowALl} >{token}</ContainnerTimeline>
+      <NavBar />
+      <ContainnerTimeline onClick={showArrowALl}>
+        <PostContainner>
+          <h1> Timeline</h1>
+          <PostWriter>
+            <img src={photo} alt="perfil"/>
+            <form onSubmit={createPost}>
+              <h2>What are you going to share today?</h2>
+              <input
+                className="link"
+                placeholder="http://..."
+                value={link}
+                onChange={(e) => setLink(e.target.value)}
+                disabled={loadingState}
+                required
+              />
+              <input
+                className="text"
+                placeholder="Awesome article about #javascript"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                disabled={loadingState}
+              />
+              <button type="submit">
+                {loadingState ? "Publishing..." : "Publish"}
+              </button>
+            </form>
+          </PostWriter>
+          <Post></Post>
+        </PostContainner>
+      </ContainnerTimeline>
     </>
   );
 };
@@ -40,4 +99,126 @@ export const ContainnerTimeline = styled.div`
   width: 100%;
   height: 100vh;
   background: #3a3939;
+  justify-content: center;
+`;
+
+const PostContainner = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 620px;
+
+  h1 {
+    width: 611px;
+    height: 64px;
+    margin-top: 78px;
+    margin-bottom: 42px;
+    font-family: "Oswald";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 43px;
+    line-height: 64px;
+
+    color: #ffffff;
+  }
+`;
+const PostWriter = styled.div`
+  display: flex;
+  width: 611px;
+  min-height: 230px;
+  margin-bottom: 28px;
+
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 16px;
+
+  img {
+    min-width: 50px;
+    height: 50px;
+    margin-top: 16px;
+    margin-left: 18px;
+    background: url(image);
+    border-radius: 26.5px;
+  }
+
+  form {
+    margin-left: 18px;
+    position: relative;
+    h2 {
+      width: 445px;
+      height: 40px;
+      margin-top: 20px;
+      font-family: "Lato";
+      font-style: normal;
+      font-weight: 300;
+      font-size: 20px;
+      line-height: 24px;
+
+      color: #707070;
+    }
+
+    .link {
+      width: 503px;
+      height: 30px;
+      margin-bottom: 5px;
+
+      background: #efefef;
+      border-radius: 5px;
+
+      ::placeholder {
+        font-family: "Lato";
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 18px;
+
+        color: #949494;
+      }
+    }
+
+    .text {
+      width: 502px;
+      height: 66px;
+      margin-bottom: 5px;
+
+      background: #efefef;
+      border-radius: 5px;
+
+      ::placeholder {
+        font-family: "Lato";
+        font-style: normal;
+        font-weight: 300;
+        font-size: 15px;
+        line-height: 18px;
+
+        color: #949494;
+      }
+    }
+
+    button {
+      position: absolute;
+      width: 112px;
+      height: 31px;
+      bottom: 16px;
+      right: 22px;
+
+      background: #1877f2;
+      border-radius: 5px;
+
+      font-family: "Lato";
+      font-style: normal;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 17px;
+
+      color: #ffffff;
+    }
+  }
+`;
+
+const Post = styled.div`
+  width: 611px;
+  height: 276px;
+
+  background: #171717;
+  border-radius: 16px;
 `;
