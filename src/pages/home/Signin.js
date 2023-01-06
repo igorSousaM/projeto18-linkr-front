@@ -4,29 +4,32 @@ import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../providers/Context";
 import { postSignin } from "../../servers/UserServices";
 export const Signin = () => {
-  const { token, setToken  } = React.useContext(AuthContext);
+  const { token, setToken, setArrow } = React.useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [on, setOn] = useState(false);
 
   const navigate = useNavigate();
   const signin = {
     email: email,
     password: password,
   };
- 
 
   function handleForm(e) {
     e.preventDefault();
     const user = postSignin(signin);
-    user.then((response) => {
+    setOn(true);
+    user
+      .then((response) => {
         const { token } = response.data;
         setToken(token);
         localStorage.setItem("tokenLikr", JSON.stringify(token));
+        setArrow(true);
         navigate("/timeline");
       })
       .catch((error) => {
-        console.log(error);
-        //alert('email ou password invalid');
+        alert("email ou password incorretos");
+        setOn(false);
       });
   }
   return (
@@ -43,14 +46,18 @@ export const Signin = () => {
             type="email"
             placeholder="email"
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
           <input
             type="password"
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
-          <button type="submit"> Sign Up </button>
+          <Button disabled={on} type="submit">
+            Sign Up
+          </Button>
           <Link to={"/sign-up"}>
             <p>First time? Create an account!</p>
           </Link>
@@ -117,17 +124,26 @@ export const ContainnerRight = styled.div`
     p {
       color: #fff;
     }
-    button {
-      width: 450px;
-      height: 65px;
-      background: #1877f2;
-      border-radius: 6px;
-      font-style: normal;
-      font-weight: 700;
-      font-size: 27px;
-      line-height: 40px;
-      color: #fff;
-      cursor: pointer;
-    }
+  
   }
+`;
+
+export const Button = styled.button`
+  width: 450px;
+  height: 65px;
+  background: #1877f2;
+  border-radius: 6px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 40px;
+  color: #fff;
+  cursor: pointer;
+  ${(props) => {
+    if (props.disabled === true) {
+      return `
+           background:#3a3939;
+         `;
+    }
+  }}
 `;

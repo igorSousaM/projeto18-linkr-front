@@ -6,7 +6,7 @@ import { postPosts } from "../../servers/PostsServices";
 import { getSignup } from "../../servers/UserServices";
 
 export const Timeline = () => {
-  const { userInformation, setUserInformation } = React.useContext(AuthContext);
+  const { userInformation, setUserInformation, showArrowALl } = React.useContext(AuthContext);
   let token = localStorage.getItem("tokenLikr");
   token = JSON.parse(token);
   
@@ -18,7 +18,7 @@ export const Timeline = () => {
       Authorization: `Bearer ${token}`,
     },
   };
-
+  
   useEffect(() => {
     const userMe = getSignup(config);
     userMe
@@ -60,7 +60,7 @@ export const Timeline = () => {
   return (
     <>
       <NavBar />
-      <ContainnerTimeline>
+      <ContainnerTimeline onClick={showArrowALl}>
         <PostContainner>
           <h1> Timeline</h1>
           <PostWriter>

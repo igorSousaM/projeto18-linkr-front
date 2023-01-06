@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../providers/Context";
-
+import { SlArrowDown, SlArrowUp } from "react-icons/sl";
+import { useNavigate } from "react-router-dom";
 export const NavBar = () => {
-  const { userInformation } = React.useContext(AuthContext);
-  const  {photo}  = userInformation
-  console.log(photo)
+  const { userInformation, arrow, showArrow, showArrowALl } = React.useContext(AuthContext);
+  const navigate = useNavigate();
+  const { photo } = userInformation;
+  function logout() {
+    localStorage.removeItem("tokenLikr");
+    navigate("/");
+  }
   return (
-    <ContainnerNav>
-      <h1>linkr</h1>
-      <img
-        src={photo}
-      />
-    </ContainnerNav>
+    <>
+      <ContainnerNav onClick={showArrowALl}>
+        <h1>linkr</h1>
+        {arrow ? (
+          <SlArrowDown onClick={showArrow} className="arrow" />
+        ) : (
+          <SlArrowUp onClick={showArrow} className="arrow" />
+        )}
+
+        <img onClick={showArrow} src={photo} />
+      </ContainnerNav>
+      {!arrow ? <Logout onClick={logout}>Logout</Logout> : null}
+    </>
   );
 };
 
@@ -37,5 +49,28 @@ export const ContainnerNav = styled.div`
     background: url(image);
     border-radius: 26.5px;
     margin-right: 20px;
+    cursor: pointer;
   }
+  .arrow {
+    margin-right: -185vh;
+    cursor: pointer;
+  }
+`;
+export const Logout = styled.div`
+  position: absolute;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  width: 150px;
+  height: 47px;
+  color: #fff;
+  background: #171717;
+  border-radius: 0px 0px 20px 20px;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
 `;
