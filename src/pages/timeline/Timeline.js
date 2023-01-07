@@ -4,6 +4,7 @@ import { NavBar } from "../../components/nav/NavBar";
 import { AuthContext } from "../../providers/Context";
 import { postPosts } from "../../servers/PostsServices";
 import { getSignup } from "../../servers/UserServices";
+import { ListPost } from "./ListPost";
 
 export const Timeline = () => {
   const { userInformation, setUserInformation, showArrowALl } = React.useContext(AuthContext);
@@ -25,8 +26,8 @@ export const Timeline = () => {
       .then((response) => {
         setUserInformation(response.data);
       })
-      .catch(() => {
-        console.log("error");
+      .catch((erro) => {
+        console.log("error", erro.config);
       });
   }, []);
 
@@ -87,7 +88,9 @@ export const Timeline = () => {
               </button>
             </form>
           </PostWriter>
-          <Post></Post>
+          <ListPost 
+          createPost={createPost}
+          />
         </PostContainner>
       </ContainnerTimeline>
     </>

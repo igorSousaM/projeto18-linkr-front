@@ -6,6 +6,7 @@ export const AuthProvider = (props) => {
   const [token, setToken] = useState("");
   const [userInformation, setUserInformation] = useState("");
   const [arrow, setArrow] = useState(true);
+  const [config, setConfig] = useState({});
   function showArrow() {
     if (arrow) setArrow(false);
     if (!arrow) setArrow(true);
@@ -22,6 +23,8 @@ export const AuthProvider = (props) => {
         setUserInformation,
         arrow,
         setArrow,
+        config,
+        setConfig,
         showArrow,
         showArrowALl
       }}
