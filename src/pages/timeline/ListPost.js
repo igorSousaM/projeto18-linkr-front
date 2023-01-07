@@ -2,11 +2,24 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getPosts } from "../../servers/PostsServices";
 import { Post } from "./Post";
+import { AuthContext } from "../../providers/Context";
 
 
-export const ListPost = ( config, photo, createPost ) => {
+export const ListPost = ( createPost ) => {
 
+    const { userInformation } = React.useContext(AuthContext);
     const [posts, setPosts] = useState();
+    
+    let token = localStorage.getItem("tokenLikr");
+    token = JSON.parse(token);
+
+    const config = {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+    };
 
     useEffect(() => {
         getPosts(config)
@@ -27,15 +40,12 @@ export const ListPost = ( config, photo, createPost ) => {
         return <>There are no posts yet</>
     }
 
-    console.log(posts);
-
     return (
         <>
             {posts.map((p, index) =>
                 <Post
                 p={p}
                 key={index}
-                config={config}
                 />
             )}
         </>

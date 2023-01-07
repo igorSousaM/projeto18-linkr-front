@@ -26,8 +26,8 @@ export const Timeline = () => {
       .then((response) => {
         setUserInformation(response.data);
       })
-      .catch(() => {
-        console.log("error");
+      .catch((erro) => {
+        console.log("error", erro.config);
       });
   }, []);
 
@@ -90,8 +90,6 @@ export const Timeline = () => {
           </PostWriter>
           <ListPost 
           createPost={createPost}
-          config={config}
-          photo={photo}
           />
         </PostContainner>
       </ContainnerTimeline>
