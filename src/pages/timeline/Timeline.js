@@ -4,6 +4,7 @@ import { NavBar } from "../../components/nav/NavBar";
 import { AuthContext } from "../../providers/Context";
 import { postPosts } from "../../servers/PostsServices";
 import { getSignup } from "../../servers/UserServices";
+import { ListPost } from "./ListPost";
 
 export const Timeline = () => {
   const { userInformation, setUserInformation, showArrowALl } = React.useContext(AuthContext);
@@ -87,7 +88,11 @@ export const Timeline = () => {
               </button>
             </form>
           </PostWriter>
-          <Post></Post>
+          <ListPost 
+          createPost={createPost}
+          config={config}
+          photo={photo}
+          />
         </PostContainner>
       </ContainnerTimeline>
     </>
