@@ -1,20 +1,35 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Children } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Signin } from "./pages/home/Signin";
 import { Signup } from "./pages/home/Signup";
 import { Timeline } from "./pages/timeline/Timeline";
- 
 
-export default function App(){
-    return (
-        <>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Signin />} />
-              <Route path="/sign-up" element={<Signup />} />
-              <Route path="/timeline" element={<Timeline />} />
-             
-            </Routes>
-          </BrowserRouter>
-        </>
-      );
+export default function App() {
+  let token = localStorage.getItem("tokenLikr");
+
+  const Private = ({ children }) => {
+    if (!token) {
+      return <Navigate to={"/"} />;
+    }
+    return children;
+  };
+
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Signin />} />
+          <Route path="/sign-up" element={<Signup />} />
+          <Route
+            path="/timeline"
+            element={
+              <Private>
+                <Timeline />
+              </Private>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
