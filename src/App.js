@@ -17,7 +17,6 @@ export default function App() {
     return children;
   };
 
-  export default function App() {
     return (
       <>
         <BrowserRouter>
