@@ -4,7 +4,8 @@ import { AuthContext } from "../../providers/Context";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import { Link, useNavigate } from "react-router-dom";
 export const NavBar = () => {
-  const { userInformation, arrow, showArrow, showArrowALl } = React.useContext(AuthContext);
+  const { userInformation, arrow, showArrow, showArrowALl } =
+    React.useContext(AuthContext);
   const navigate = useNavigate();
   const { photo } = userInformation;
   function logout() {
@@ -14,14 +15,15 @@ export const NavBar = () => {
   return (
     <>
       <ContainnerNav onClick={showArrowALl}>
-        <Link to={"/timeline"}><h1>linkr</h1></Link>
-        {arrow ? (
-          <SlArrowDown onClick={showArrow} className="arrow" />
-        ) : (
-          <SlArrowUp onClick={showArrow} className="arrow" />
-        )}
-
-        <img onClick={showArrow} src={photo} />
+      <Link to={"/timeline"}><h1>linkr</h1></Link>
+      <UserPhoto>
+          {arrow ? (
+            <SlArrowDown onClick={showArrow} className="arrow" />
+          ) : (
+            <SlArrowUp onClick={showArrow} className="arrow" />
+          )}
+          <img onClick={showArrow} src={photo} />
+        </UserPhoto>
       </ContainnerNav>
       {!arrow ? <Logout onClick={logout}>Logout</Logout> : null}
     </>
@@ -31,11 +33,12 @@ export const NavBar = () => {
 export const ContainnerNav = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content:space-between;
   width: 100%;
   height: 10vh;
   background: #000;
   color: #fff;
+
   h1 {
     margin-left: 20px;
     font-weight: 700;
@@ -43,18 +46,7 @@ export const ContainnerNav = styled.div`
     line-height: 54px;
     letter-spacing: 0.05em;
   }
-  img {
-    width: 53px;
-    height: 53px;
-    background: url(image);
-    border-radius: 26.5px;
-    margin-right: 20px;
-    cursor: pointer;
-  }
-  .arrow {
-    margin-right: -185vh;
-    cursor: pointer;
-  }
+
 `;
 export const Logout = styled.div`
   position: absolute;
@@ -62,7 +54,6 @@ export const Logout = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
   width: 150px;
   height: 47px;
   color: #fff;
@@ -74,3 +65,26 @@ export const Logout = styled.div`
   letter-spacing: 0.05em;
   cursor: pointer;
 `;
+
+export const UserPhoto = styled.div`
+
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right:20px;
+    gap:20px;
+    img {
+    width: 53px;
+    height: 53px;
+    background: url(image);
+    border-radius: 26.5px;
+ 
+    cursor: pointer;
+  }
+  .arrow {
+   
+    cursor: pointer;
+  }
+
+`
