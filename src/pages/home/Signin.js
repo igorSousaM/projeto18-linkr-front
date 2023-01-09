@@ -56,7 +56,7 @@ export const Signin = () => {
           />
 
           <Button disabled={on} type="submit">
-            Sign Up
+            Sign In
           </Button>
           <Link to={"/sign-up"}>
             <p>First time? Create an account!</p>
