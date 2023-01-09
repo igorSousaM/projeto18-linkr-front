@@ -114,6 +114,7 @@ export const ContainnerTimeline = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
+  overflow-x: scroll;
   background: #3a3939;
   justify-content: center;
 `;

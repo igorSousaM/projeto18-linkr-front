@@ -1,8 +1,7 @@
 import axios from "axios";
 
-/* https://api-linkr-back.onrender.com */
 
-const APIprefix = "http://localhost:5000";
+const APIprefix = "https://api-linkr-back.onrender.com ";
 
 function postPosts(body, config) {
   return axios.post(`${APIprefix}/posts`, body, config);
@@ -15,6 +14,9 @@ function getPostsByHashtag(hashtag, config) {
 function getPosts(config) {
   return axios.get(`${APIprefix}/timeline`, config);
 }
+function deletePost(id,config){
+  return axios.delete(`${APIprefix}/posts/${id}`, config);
+}
 
 function postLike(body, config){
   return axios.post(`${APIprefix}/likes`, body, config);
@@ -24,4 +26,5 @@ function getHashtags(config){
   return axios.get(`${APIprefix}/trending`, config)
 }
 
-export { postPosts, getPosts, postLike, getPostsByHashtag, getHashtags };
+export { postPosts, getPosts, postLike, getPostsByHashtag, getHashtags, deletePost };
+

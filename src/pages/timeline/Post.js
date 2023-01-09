@@ -4,14 +4,45 @@ import { AuthContext } from "../../providers/Context";
 import { postLike } from "../../servers/PostsServices";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
+import { deletePost } from "../../servers/PostsServices";
+import { ThreeDots } from "react-loader-spinner";
 
-export const Post = ( { p } ) => {
+export const Post = ({ p }) => {
     const navigate = useNavigate();
     
+  const { userInformation } = React.useContext(AuthContext);
+  let token = localStorage.getItem("tokenLikr");
+  token = JSON.parse(token);
 
-    const { userInformation } = React.useContext(AuthContext);
+  const config = {
+    headers: {
+      accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-    console.log("Post", userInformation, p);
+  const [loadingState, setLoadingState] = useState(false);
+
+  function deleteIcon(id) {
+    if (window.confirm("Aperte Ok para confirmar a exclusão do post")) {
+      setLoadingState(true);
+      deletePost(id, config)
+        .then(() => {
+          alert("deletado!");
+          setLoadingState(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Houve um erro ao deletar seu post");
+          setLoadingState(false);
+        });
+    }
+  }
+
+  function updateIcon() {
+    alert("atualizar apertado!");
+  }
 
 
 
@@ -83,105 +114,112 @@ export const Post = ( { p } ) => {
 
 const ContainerPost = styled.div`
 box-sizing:border-box;
-width: 611px;
-height: 276px;
-display: flex;
-align-items: center;
-justify-content: space-around;
-background: #171717;
-border-radius: 16px;
+  width: 611px;
+  min-height: 276px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #171717;
+  border-radius: 16px;
 margin-bottom:16px;
-`
+`;
 
 const User = styled.div`
-width: 88px;
-height: 250px;
-display: flex;
-flex-direction: column;
-align-items: center;
-img{
+  width: 88px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  img {
     min-width: 50px;
     height: 50px;
     margin: 5px;
     background: url(image);
     border-radius: 26.5px;
-}
-ion-icon{
+  }
+  ion-icon {
     width: 25px;
     height: 25px;
     color: white;
-    margin:5px;
-    :hover{
+    margin: 5px;
+      :hover{
         cursor: pointer  
     }
 }
-
-p{
-    font-family: 'Lato';
+  
+p {
+    font-family: "Lato";
     font-style: normal;
     font-weight: 400;
     font-size: 11px;
     text-align: center;
-    color: #FFFFFF;
-}
-`
+    color: #ffffff;
+  }
+`;
 
 const LinkDescription = styled.div`
 box-sizing:border-box;
-width: 503px;
-height: 250px;
-`
+  width: 503px;
+  height: 250px;
+`;
 
 const Description = styled.div`
-width: 503px;
-height: 80px;
-display: flex;
-flex-direction: column;
-justify-content: flex-start;
-position: relative;
-padding: 10px;
-h2{
+  width: 503px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  padding: 10px;
+  h2 {
     width: 200px;
     height: 40px;
-    font-family: 'Lato';
+    font-family: "Lato";
     font-style: normal;
     font-weight: 400;
     font-size: 19px;
-    color: #FFFFFF;
-    margin:10px 0 0 0;
+    color: #ffffff;
+    margin: 10px 0 0 0;
     line-height: 0;
-}
-h3{
-    font-family: 'Lato';
+  }
+  h3 {
+    font-family: "Lato";
     font-style: normal;
     font-weight: 400;
     font-size: 17px;
-    color: #B7B7B7;
-}
-`
+    color: #b7b7b7;
+  }
+`;
 
 const Icon = styled.div`
-width: 80px;
-height: 40px;
-display: flex;
-justify-content: center;
-align-items: center;
-position: absolute;
-right: 20px;
-top: 0;
-ion-icon{
+  width: 80px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: 20px;
+  top: 0;
+  ion-icon {
     width: 25px;
     height: 25px;
     color: white;
-    margin:5px;
-}
-`
+    margin: 5px;
+  }
+`;
 
 const UrlLink = styled.div`
-box-sizing:border-box;  
+  box-sizing:border-box;  
 width: 503px;
-height: 155px;
-background-color: red;
-border: 1px solid #4D4D4D;
-border-radius: 11px;
-`
+  height: 155px;
+  background-color: red;
+  border: 1px solid #4d4d4d;
+  border-radius: 11px;
+`;
+
+const LoadingIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+`;
