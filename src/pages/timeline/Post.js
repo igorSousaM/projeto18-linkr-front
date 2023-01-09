@@ -1,25 +1,56 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../providers/Context";
+import { postLike } from "../../servers/PostsServices";
+import { ReactTagify } from "react-tagify";
+import { useNavigate } from "react-router-dom";
 
 export const Post = ( { p } ) => {
+    const navigate = useNavigate();
+    
 
     const { userInformation } = React.useContext(AuthContext);
 
     console.log("Post", userInformation, p);
+
+
+
+    async function likePost(postId){
+        let token = localStorage.getItem("tokenLikr");
+        token = JSON.parse(token);
+        const config = {
+            headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const likeBody = { postId: postId}
+        postLike(likeBody, config);
+
+    }
+    function navigateToHashtag(tag){
+       navigate(`/hashtags/${tag.substring(1)}`)
+    }
 
     if(p.userId === userInformation.id){
         return(
             <ContainerPost>
                 <User>
                     <img src={userInformation.photo} alt="Foto de usuário"/>
-                    <ion-icon name="heart-outline"></ion-icon>
-                    <p>13 likes</p>
+                    <ion-icon onClick={()=>likePost(p.id)} name="heart-outline"></ion-icon>
+                    <p>{p.likeCount}</p>
                 </User>
                 <LinkDescription>
                     <Description>
                         <h2>{userInformation.name}</h2>
-                        <h3>{p.text}</h3>
+                        <ReactTagify colors={"white"} tagClicked={(tag)=> navigateToHashtag(tag)}  >
+                            
+                            <h3>{p.text}</h3>
+                        </ReactTagify>
+                        
+
                         <Icon>
                             <ion-icon name="trash-outline"></ion-icon>
                             <ion-icon name="brush-outline"></ion-icon>
@@ -40,7 +71,8 @@ export const Post = ( { p } ) => {
                 <LinkDescription>
                     <Description>
                         <h2>{userInformation.name}</h2>
-                        <h3>{p.text}</h3>
+                        <ReactTagify colors={"white"} tagClicked={(tag)=> navigateToHashtag(tag)}><h3>{p.text}</h3></ReactTagify>
+                        
                     </Description>
                     <UrlLink></UrlLink>
                 </LinkDescription>
@@ -50,6 +82,7 @@ export const Post = ( { p } ) => {
 }
 
 const ContainerPost = styled.div`
+box-sizing:border-box;
 width: 611px;
 height: 276px;
 display: flex;
@@ -57,6 +90,7 @@ align-items: center;
 justify-content: space-around;
 background: #171717;
 border-radius: 16px;
+margin-bottom:16px;
 `
 
 const User = styled.div`
@@ -77,7 +111,11 @@ ion-icon{
     height: 25px;
     color: white;
     margin:5px;
+    :hover{
+        cursor: pointer  
+    }
 }
+
 p{
     font-family: 'Lato';
     font-style: normal;
@@ -89,6 +127,7 @@ p{
 `
 
 const LinkDescription = styled.div`
+box-sizing:border-box;
 width: 503px;
 height: 250px;
 `
@@ -139,6 +178,7 @@ ion-icon{
 `
 
 const UrlLink = styled.div`
+box-sizing:border-box;  
 width: 503px;
 height: 155px;
 background-color: red;
