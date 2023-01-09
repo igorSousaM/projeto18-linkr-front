@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../providers/Context";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 export const NavBar = () => {
   const { userInformation, arrow, showArrow, showArrowALl } =
     React.useContext(AuthContext);
@@ -15,9 +15,8 @@ export const NavBar = () => {
   return (
     <>
       <ContainnerNav onClick={showArrowALl}>
-        <h1>linkr</h1>
-        
-        <UserPhoto>
+      <Link to={"/timeline"}><h1>linkr</h1></Link>
+      <UserPhoto>
           {arrow ? (
             <SlArrowDown onClick={showArrow} className="arrow" />
           ) : (
@@ -25,7 +24,6 @@ export const NavBar = () => {
           )}
           <img onClick={showArrow} src={photo} />
         </UserPhoto>
-       
       </ContainnerNav>
       {!arrow ? <Logout onClick={logout}>Logout</Logout> : null}
     </>

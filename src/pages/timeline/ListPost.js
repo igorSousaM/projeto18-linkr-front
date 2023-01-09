@@ -6,7 +6,7 @@ import { AuthContext } from "../../providers/Context";
 
 
 export const ListPost = ( createPost ) => {
-
+    
     const { userInformation } = React.useContext(AuthContext);
     const [posts, setPosts] = useState();
     
@@ -41,16 +41,20 @@ export const ListPost = ( createPost ) => {
     }
 
     return (
-        <>
+        <List>
             {posts.map((p, index) =>
                 <Post
                 p={p}
                 key={index}
                 />
             )}
-        </>
+        </List>
+            
     )
 }
+
+const List = styled.div`
+`
 
 const ContainerCarregamento = styled.div`
     width: 100%;
