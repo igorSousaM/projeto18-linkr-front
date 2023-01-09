@@ -4,7 +4,8 @@ import { AuthContext } from "../../providers/Context";
 import { SlArrowDown, SlArrowUp } from "react-icons/sl";
 import { useNavigate } from "react-router-dom";
 export const NavBar = () => {
-  const { userInformation, arrow, showArrow, showArrowALl } = React.useContext(AuthContext);
+  const { userInformation, arrow, showArrow, showArrowALl } =
+    React.useContext(AuthContext);
   const navigate = useNavigate();
   const { photo } = userInformation;
   function logout() {
@@ -15,13 +16,17 @@ export const NavBar = () => {
     <>
       <ContainnerNav onClick={showArrowALl}>
         <h1>linkr</h1>
-        {arrow ? (
-          <SlArrowDown onClick={showArrow} className="arrow" />
-        ) : (
-          <SlArrowUp onClick={showArrow} className="arrow" />
-        )}
+        
+        <UserPhoto>
+          {arrow ? (
+            <SlArrowDown onClick={showArrow} className="arrow" />
+          ) : (
+            <SlArrowUp onClick={showArrow} className="arrow" />
+          )}
 
-        <img onClick={showArrow} src={photo} />
+          <img onClick={showArrow} src={photo} />
+        </UserPhoto>
+       
       </ContainnerNav>
       {!arrow ? <Logout onClick={logout}>Logout</Logout> : null}
     </>
