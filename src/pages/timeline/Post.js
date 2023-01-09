@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../providers/Context";
+import { postLike } from "../../servers/PostsServices";
+import { ReactTagify } from "react-tagify";
+import { useNavigate } from "react-router-dom";
 import { deletePost } from "../../servers/PostsServices";
 import { ThreeDots } from "react-loader-spinner";
 
 export const Post = ({ p }) => {
+    const navigate = useNavigate();
+    
   const { userInformation } = React.useContext(AuthContext);
   let token = localStorage.getItem("tokenLikr");
   token = JSON.parse(token);
@@ -39,71 +44,76 @@ export const Post = ({ p }) => {
     alert("atualizar apertado!");
   }
 
-  if (p.userId === userInformation.id) {
-    return (
-      <ContainerPost>
-        <User>
-          <img src={userInformation.photo} alt="Foto de usuário" />
-          <ion-icon name="heart-outline"></ion-icon>
-          <p>13 likes</p>
-        </User>
-        {loadingState ? (
-          <LoadingIcon>
-            <ThreeDots
-              height="80"
-              width="80"
-              radius="9"
-              color="#4fa94d"
-              ariaLabel="three-dots-loading"
-              wrapperStyle={{}}
-              wrapperClassName=""
-              visible={true}
-            />
-          </LoadingIcon>
-        ) : (
-          <>
-            <LinkDescription>
-              <Description>
-                <h2>{userInformation.name}</h2>
-                <h3>{p.text}</h3>
-                <Icon>
-                  <ion-icon
-                    name="trash-outline"
-                    onClick={() => deleteIcon(p.id)}
-                  ></ion-icon>
-                  <ion-icon
-                    name="brush-outline"
-                    onClick={updateIcon}
-                  ></ion-icon>
-                </Icon>
-              </Description>
-              <UrlLink></UrlLink>
-            </LinkDescription>
-          </>
-        )}
-      </ContainerPost>
-    );
-  } else {
-    return (
-      <ContainerPost>
-        <User>
-          <img />
-          <ion-icon name="heart-outline"></ion-icon>
-          <p></p>
-        </User>
-        <LinkDescription>
-          <Description>
-            <h2>{userInformation.name}</h2>
-            <h3>{p.text}</h3>
-          </Description>
-          <UrlLink></UrlLink>
-        </LinkDescription>
-      </ContainerPost>
-    );
-  }
-};
+
+
+    async function likePost(postId){
+        let token = localStorage.getItem("tokenLikr");
+        token = JSON.parse(token);
+        const config = {
+            headers: {
+            accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const likeBody = { postId: postId}
+        postLike(likeBody, config);
+
+    }
+    function navigateToHashtag(tag){
+       navigate(`/hashtags/${tag.substring(1)}`)
+    }
+
+    if(p.userId === userInformation.id){
+        return(
+            <ContainerPost>
+                <User>
+                    <img src={userInformation.photo} alt="Foto de usuário"/>
+                    <ion-icon onClick={()=>likePost(p.id)} name="heart-outline"></ion-icon>
+                    <p>{p.likeCount}</p>
+                </User>
+                <LinkDescription>
+                    <Description>
+                        <h2>{userInformation.name}</h2>
+                        <ReactTagify colors={"white"} tagClicked={(tag)=> navigateToHashtag(tag)}  >
+                            
+                            <h3>{p.text}</h3>
+                        </ReactTagify>
+                        
+
+                        <Icon>
+                            <ion-icon name="trash-outline"></ion-icon>
+                            <ion-icon name="brush-outline"></ion-icon>
+                        </Icon> 
+                    </Description>
+                    <UrlLink></UrlLink>
+                </LinkDescription>
+            </ContainerPost>
+        )
+    }else{
+        return (
+            <ContainerPost>
+                <User>
+                    <img />
+                    <ion-icon name="heart-outline"></ion-icon>
+                    <p></p>
+                </User>
+                <LinkDescription>
+                    <Description>
+                        <h2>{userInformation.name}</h2>
+                        <ReactTagify colors={"white"} tagClicked={(tag)=> navigateToHashtag(tag)}><h3>{p.text}</h3></ReactTagify>
+                        
+                    </Description>
+                    <UrlLink></UrlLink>
+                </LinkDescription>
+            </ContainerPost>
+        )
+    }
+}
 
 const ContainerPost = styled.div`
+box-sizing:border-box;
   width: 611px;
   min-height: 276px;
   display: flex;
@@ -111,6 +121,7 @@ const ContainerPost = styled.div`
   justify-content: space-between;
   background: #171717;
   border-radius: 16px;
+margin-bottom:16px;
 `;
 
 const User = styled.div`
@@ -131,8 +142,12 @@ const User = styled.div`
     height: 25px;
     color: white;
     margin: 5px;
-  }
-  p {
+      :hover{
+        cursor: pointer  
+    }
+}
+  
+p {
     font-family: "Lato";
     font-style: normal;
     font-weight: 400;
@@ -143,6 +158,7 @@ const User = styled.div`
 `;
 
 const LinkDescription = styled.div`
+box-sizing:border-box;
   width: 503px;
   height: 250px;
 `;
@@ -193,7 +209,8 @@ const Icon = styled.div`
 `;
 
 const UrlLink = styled.div`
-  width: 503px;
+  box-sizing:border-box;  
+width: 503px;
   height: 155px;
   background-color: red;
   border: 1px solid #4d4d4d;

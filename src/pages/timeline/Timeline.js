@@ -5,6 +5,8 @@ import { AuthContext } from "../../providers/Context";
 import { postPosts } from "../../servers/PostsServices";
 import { getSignup } from "../../servers/UserServices";
 import { ListPost } from "./ListPost";
+import { getHashtags } from "../../servers/PostsServices";
+import { Link } from "react-router-dom";
 
 export const Timeline = () => {
   const { userInformation, setUserInformation, showArrowALl } = React.useContext(AuthContext);
@@ -29,11 +31,14 @@ export const Timeline = () => {
       .catch((erro) => {
         console.log("error", erro.config);
       });
+      getHashtags(config).then((r)=>{setTags(r.data);console.log(r)}).catch(erro=>console.log(erro))
+    
   }, []);
 
   const [link, setLink] = useState("");
   const [text, setText] = useState("");
   const [loadingState, setLoadingState] = useState(false);
+  const [tags, setTags] = useState([]);
 
   function createPost(e) {
     e.preventDefault();
@@ -56,6 +61,7 @@ export const Timeline = () => {
         alert("Houve um erro ao publicar seu link");
         setLoadingState(false);
       });
+
   }
 
   return (
@@ -92,6 +98,13 @@ export const Timeline = () => {
           createPost={createPost}
           />
         </PostContainner>
+        <TrendingBox>
+          <h4>trending</h4>
+          <div></div>
+          <ul>
+            {tags.map((e,index)=>(<Link to={`/hashtags/${e.name}`}><li key={index}># {e.name}</li></Link>))}
+          </ul>
+        </TrendingBox>
       </ContainnerTimeline>
     </>
   );
@@ -106,7 +119,7 @@ export const ContainnerTimeline = styled.div`
   justify-content: center;
 `;
 
-const PostContainner = styled.div`
+export const PostContainner = styled.div`
   display: flex;
   flex-direction: column;
   width: 620px;
@@ -219,3 +232,42 @@ const PostWriter = styled.div`
   }
 `;
 
+export const TrendingBox = styled.div`
+margin-top:183px;
+width: 301px;
+height: 406px;
+background: #171717;
+border-radius: 16px;
+box-sizing:border-box;
+padding:16px;
+position:relative;
+
+div{
+  top:61px;
+  left:0px;
+  position:absolute;
+  width:301px;
+  height:1px;
+  background-color:#484848;
+}
+h4{
+  font-family: 'Oswald';
+font-style: normal;
+font-weight: 700;
+font-size: 27px;
+line-height: 40px;
+color: #FFFFFF;
+}
+ul{
+  margin-top:22px;
+}
+li{
+  font-family: 'Lato';
+font-style: normal;
+font-weight: 700;
+font-size: 19px;
+line-height: 23px;
+letter-spacing: 0.05em;
+  color:white
+}
+`;
