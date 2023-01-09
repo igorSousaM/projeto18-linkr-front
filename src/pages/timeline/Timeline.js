@@ -101,6 +101,7 @@ export const ContainnerTimeline = styled.div`
   display: flex;
   width: 100%;
   height: 100vh;
+  overflow-x: scroll;
   background: #3a3939;
   justify-content: center;
 `;
@@ -218,10 +219,3 @@ const PostWriter = styled.div`
   }
 `;
 
-const Post = styled.div`
-  width: 611px;
-  height: 276px;
-
-  background: #171717;
-  border-radius: 16px;
-`;

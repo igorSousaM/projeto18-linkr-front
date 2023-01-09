@@ -12,4 +12,8 @@ function getPosts(config) {
   return axios.get(`${APIprefix}/timeline`, config);
 }
 
-export { postPosts, getPosts };
+function deletePost(id,config){
+    return axios.delete(`${APIprefix}/posts/${id}`, config);
+}
+
+export { postPosts, getPosts, deletePost };
