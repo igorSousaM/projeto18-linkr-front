@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AuthContext } from "../../providers/Context";
 import { deletePost } from "../../servers/PostsServices";
+import { ThreeDots } from "react-loader-spinner";
 
 export const Post = ({ p }) => {
   const { userInformation } = React.useContext(AuthContext);
@@ -15,17 +16,21 @@ export const Post = ({ p }) => {
       Authorization: `Bearer ${token}`,
     },
   };
-  console.log("Post", userInformation, p);
+
+  const [loadingState, setLoadingState] = useState(false);
 
   function deleteIcon(id) {
     if (window.confirm("Aperte Ok para confirmar a exclusão do post")) {
+      setLoadingState(true);
       deletePost(id, config)
         .then(() => {
-            alert('deletado!')
+          alert("deletado!");
+          setLoadingState(false);
         })
         .catch((err) => {
           console.log(err);
           alert("Houve um erro ao deletar seu post");
+          setLoadingState(false);
         });
     }
   }
@@ -42,20 +47,40 @@ export const Post = ({ p }) => {
           <ion-icon name="heart-outline"></ion-icon>
           <p>13 likes</p>
         </User>
-        <LinkDescription>
-          <Description>
-            <h2>{userInformation.name}</h2>
-            <h3>{p.text}</h3>
-            <Icon>
-              <ion-icon
-                name="trash-outline"
-                onClick={() => deleteIcon(p.id)}
-              ></ion-icon>
-              <ion-icon name="brush-outline" onClick={updateIcon}></ion-icon>
-            </Icon>
-          </Description>
-          <UrlLink></UrlLink>
-        </LinkDescription>
+        {loadingState ? (
+          <LoadingIcon>
+            <ThreeDots
+              height="80"
+              width="80"
+              radius="9"
+              color="#4fa94d"
+              ariaLabel="three-dots-loading"
+              wrapperStyle={{}}
+              wrapperClassName=""
+              visible={true}
+            />
+          </LoadingIcon>
+        ) : (
+          <>
+            <LinkDescription>
+              <Description>
+                <h2>{userInformation.name}</h2>
+                <h3>{p.text}</h3>
+                <Icon>
+                  <ion-icon
+                    name="trash-outline"
+                    onClick={() => deleteIcon(p.id)}
+                  ></ion-icon>
+                  <ion-icon
+                    name="brush-outline"
+                    onClick={updateIcon}
+                  ></ion-icon>
+                </Icon>
+              </Description>
+              <UrlLink></UrlLink>
+            </LinkDescription>
+          </>
+        )}
       </ContainerPost>
     );
   } else {
@@ -80,10 +105,10 @@ export const Post = ({ p }) => {
 
 const ContainerPost = styled.div`
   width: 611px;
-  height: 276px;
+  min-height: 276px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   background: #171717;
   border-radius: 16px;
 `;
@@ -173,4 +198,11 @@ const UrlLink = styled.div`
   background-color: red;
   border: 1px solid #4d4d4d;
   border-radius: 11px;
+`;
+
+const LoadingIcon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 `;
