@@ -7,6 +7,7 @@ export const AuthProvider = (props) => {
   const [userInformation, setUserInformation] = useState("");
   const [arrow, setArrow] = useState(true);
   const [config, setConfig] = useState({});
+  const [posts, setPosts] = useState();
   function showArrow() {
     if (arrow) setArrow(false);
     if (!arrow) setArrow(true);
@@ -26,7 +27,9 @@ export const AuthProvider = (props) => {
         config,
         setConfig,
         showArrow,
-        showArrowALl
+        showArrowALl,
+        posts, 
+        setPosts
       }}
     >
       {props.children}
