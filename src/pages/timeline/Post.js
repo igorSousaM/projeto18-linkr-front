@@ -5,13 +5,19 @@ import { postLike } from "../../servers/PostsServices";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { deletePost } from "../../servers/PostsServices";
-import { ThreeDots } from "react-loader-spinner";
+import { ThreeCircles } from "react-loader-spinner";
+import Modal from "../../components/nav/Modal";
+
+export const Post = ({ p,setRenderFlag,renderFlag }) => {
+  const navigate = useNavigate();
+
 
 export const Post = ({ p }) => {
   const navigate = useNavigate();
 
   const { userInformation, posts, setPosts } = React.useContext(AuthContext);
   //console.log(posts)
+
   let token = localStorage.getItem("tokenLikr");
   token = JSON.parse(token);
 
@@ -24,21 +30,22 @@ export const Post = ({ p }) => {
   };
 
   const [loadingState, setLoadingState] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   function deleteIcon(id) {
-    if (window.confirm("Aperte Ok para confirmar a exclusão do post")) {
-      setLoadingState(true);
-      deletePost(id, config)
-        .then(() => {
-          alert("deletado!");
-          setLoadingState(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("Houve um erro ao deletar seu post");
-          setLoadingState(false);
-        });
-    }
+    setLoadingState(true);
+    deletePost(id, config)
+      .then(() => {
+        setLoadingState(false);
+        setOpenModal(false);
+        setRenderFlag(!renderFlag)
+      })
+      .catch((err) => {
+        console.log(err);
+        setOpenModal(false);
+        setLoadingState(false);
+        alert("Houve um erro ao deletar seu post");
+      });
   }
 
   function updateIcon() {
@@ -59,6 +66,7 @@ export const Post = ({ p }) => {
     const likeBody = { postId: postId };
     postLike(likeBody, config);
   }
+
   function navigateToHashtag(tag) {
     navigate(`/hashtags/${tag.substring(1)}`);
   }
@@ -125,6 +133,105 @@ export const Post = ({ p }) => {
           <UrlLink></UrlLink>
         </LinkDescription>
       </ContainerPost>
+  function navigateToHashtag(tag) {
+    navigate(`/hashtags/${tag.substring(1)}`);
+  }
+  let postLink = p.link;
+  postLink = JSON.parse(postLink);
+  const { metadata } = postLink;
+  console.log(postLink);
+  
+  if (p.userId === userInformation.id) {
+    return (
+        <>
+      <ContainerPost>
+        <User>
+          <img src={userInformation.photo} alt="Foto de usuário" />
+          <ion-icon
+            onClick={() => likePost(p.id)}
+            name="heart-outline"
+          ></ion-icon>
+          <p>{p.likeCount}</p>
+        </User>
+        {loadingState ? (
+            <LoadingContainer>
+              <ThreeCircles
+                height="100"
+                width="100"
+                color="#4fa94d"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="three-circles-rotating"
+                outerCircleColor=""
+                innerCircleColor=""
+                middleCircleColor=""
+              />
+            </LoadingContainer>
+          ) : (
+        <LinkDescription>
+          <Description>
+            <h2>{userInformation.name}</h2>
+            <ReactTagify
+              colors={"white"}
+              tagClicked={(tag) => navigateToHashtag(tag)}
+            >
+              <h3>{p.text}</h3>
+            </ReactTagify>
+
+            <Icon>
+              <ion-icon 
+                name="trash-outline"  
+                onClick={() => setOpenModal(true)}
+              ></ion-icon>
+              <ion-icon 
+              name="brush-outline" 
+              onClick={() => updateIcon()}    
+              ></ion-icon>
+            </Icon>
+          </Description>
+          <UrlLink>
+            <div>
+              <h3>{metadata.title}</h3>
+              <p>{metadata.description}</p>
+              <h4>{metadata.website}</h4>
+            </div>
+
+            <img src={metadata.banner} className="banner" />
+          </UrlLink>
+        </LinkDescription>
+        )}
+      </ContainerPost>
+      {openModal && (
+          <Modal
+            setOpenModal={setOpenModal}
+            deleteIcon={deleteIcon}
+            id={p.id}
+          />
+        )}
+      </>
+    );
+  } else {
+    return (
+      <ContainerPost>
+        <User>
+          <img src={userInformation.photo} alt="Foto de usuário" />
+          <ion-icon name="heart-outline"></ion-icon>
+          <p></p>
+        </User>
+        <LinkDescription>
+          <Description>
+            <h2>{userInformation.name}</h2>
+            <ReactTagify
+              colors={"white"}
+              tagClicked={(tag) => navigateToHashtag(tag)}
+            >
+              <h3>{p.text}</h3>
+            </ReactTagify>
+          </Description>
+          <UrlLink></UrlLink>
+        </LinkDescription>
+      </ContainerPost>
     );
   }
 };
@@ -140,7 +247,7 @@ const ContainerPost = styled.div`
   border-radius: 16px;
   margin-bottom: 16px;
   padding: 20px;
- 
+
 `;
 
 const User = styled.div`
@@ -227,8 +334,8 @@ const Icon = styled.div`
   right: 20px;
   top: 0;
   ion-icon {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     color: white;
     margin: 5px;
   }
@@ -236,10 +343,11 @@ const Icon = styled.div`
 
 const UrlLink = styled.div`
   box-sizing: border-box;
- 
+
   width: 503px;
   min-height: 155px;
   display: flex;
+
   border: 1px solid #4d4d4d;
   border-radius: 11px;
   padding: 10px;
@@ -283,7 +391,8 @@ const UrlLink = styled.div`
   }
 `;
 
-const LoadingIcon = styled.div`
+const LoadingContainer = styled.div`
+  width: 503px;
   display: flex;
   justify-content: center;
   align-items: center;

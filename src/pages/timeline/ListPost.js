@@ -3,13 +3,16 @@ import styled from "styled-components";
 import { getPosts } from "../../servers/PostsServices";
 import { Post } from "./Post";
 import { AuthContext } from "../../providers/Context";
+import { render } from "@testing-library/react";
 
 
 export const ListPost = ( createPost ) => {
     
+
     const { userInformation, posts, setPosts } = React.useContext(AuthContext);
-  
+  const [renderFlag,setRenderFlag] = useState(false)
    
+
     let token = localStorage.getItem("tokenLikr");
     token = JSON.parse(token);
 
@@ -30,10 +33,12 @@ export const ListPost = ( createPost ) => {
             console.log(err);
            
           });
-    }, []);
+
+    }, [createPost,renderFlag]);
+
 
     if(posts === undefined){
-        return <ContainerCarregamento><img src="https://miro.medium.com/max/1400/1*e_Loq49BI4WmN7o9ItTADg.gif"/></ContainerCarregamento>
+        return <ContainerCarregamento><img src="https://miro.medium.com/max/1400/1*e_Loq49BI4WmN7o9ItTADg.gif" alt="carregando"/></ContainerCarregamento>
     };
 
     if(posts.length < 1){
@@ -47,6 +52,8 @@ export const ListPost = ( createPost ) => {
                 <Post
                 p={p}
                 key={index}
+                setRenderFlag={setRenderFlag}
+                renderFlag={renderFlag}
                 />
             )}
         </List>
