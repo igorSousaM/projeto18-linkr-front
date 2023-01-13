@@ -8,7 +8,7 @@ import { deletePost } from "../../servers/PostsServices";
 import { ThreeCircles } from "react-loader-spinner";
 import Modal from "../../components/nav/Modal";
 
-export const Post = ({ p, setRenderFlag, renderFlag }) => {
+export const Post = ({ p,setRenderFlag,renderFlag }) => {
   const navigate = useNavigate();
 
   const { userInformation } = React.useContext(AuthContext);
@@ -32,7 +32,7 @@ export const Post = ({ p, setRenderFlag, renderFlag }) => {
       .then(() => {
         setLoadingState(false);
         setOpenModal(false);
-        setRenderFlag(!renderFlag);
+        setRenderFlag(!renderFlag)
       })
       .catch((err) => {
         console.log(err);
@@ -60,7 +60,7 @@ export const Post = ({ p, setRenderFlag, renderFlag }) => {
     const likeBody = { postId: postId };
     postLike(likeBody, config);
   }
-
+  
   function navigateToHashtag(tag) {
     navigate(`/hashtags/${tag.substring(1)}`);
   }
@@ -96,7 +96,6 @@ export const Post = ({ p, setRenderFlag, renderFlag }) => {
             <LinkDescription>
               <Description>
                 <h2>{userInformation.name}</h2>
-
                 <ReactTagify
                   colors={"white"}
                   tagClicked={(tag) => navigateToHashtag(tag)}
@@ -232,23 +231,6 @@ const Description = styled.div`
     font-weight: 400;
     font-size: 17px;
     color: #b7b7b7;
-  }
-
-  input {
-    box-sizing: border-box;
-    width: 500px;
-    height: 44px;
-
-    background: #ffffff;
-    border-radius: 7px;
-
-    font-family: "Lato", sans-serif;
-    font-style: normal;
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 17px;
-
-    color: #4c4c4c;
   }
 `;
 
