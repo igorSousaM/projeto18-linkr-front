@@ -5,11 +5,12 @@ import { postLike } from "../../servers/PostsServices";
 import { ReactTagify } from "react-tagify";
 import { useNavigate } from "react-router-dom";
 import { deletePost } from "../../servers/PostsServices";
-import { ThreeDots } from "react-loader-spinner";
+import { ThreeCircles } from "react-loader-spinner";
+import Modal from "../../components/nav/Modal";
 
 export const Post = ({ p }) => {
-    const navigate = useNavigate();
-    
+  const navigate = useNavigate();
+
   const { userInformation } = React.useContext(AuthContext);
   let token = localStorage.getItem("tokenLikr");
   token = JSON.parse(token);
@@ -23,97 +24,137 @@ export const Post = ({ p }) => {
   };
 
   const [loadingState, setLoadingState] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
 
   function deleteIcon(id) {
-    if (window.confirm("Aperte Ok para confirmar a exclusão do post")) {
-      setLoadingState(true);
-      deletePost(id, config)
-        .then(() => {
-          alert("deletado!");
-          setLoadingState(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          alert("Houve um erro ao deletar seu post");
-          setLoadingState(false);
-        });
-    }
+    setLoadingState(true);
+    deletePost(id, config)
+      .then(() => {
+        setLoadingState(false);
+        setOpenModal(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setOpenModal(false);
+        setLoadingState(false);
+        alert("Houve um erro ao deletar seu post");
+      });
   }
 
   function updateIcon() {
     alert("atualizar apertado!");
   }
 
+  async function likePost(postId) {
+    let token = localStorage.getItem("tokenLikr");
+    token = JSON.parse(token);
+    const config = {
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
 
+    const likeBody = { postId: postId };
+    postLike(likeBody, config);
+  }
+  function navigateToHashtag(tag) {
+    navigate(`/hashtags/${tag.substring(1)}`);
+  }
 
-    async function likePost(postId){
-        let token = localStorage.getItem("tokenLikr");
-        token = JSON.parse(token);
-        const config = {
-            headers: {
-            accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-            },
-        };
+  if (p.userId === userInformation.id) {
+    return (
+      <>
+        <ContainerPost>
+          <User>
+            <img src={userInformation.photo} alt="Foto de usuário" />
+            <ion-icon
+              onClick={() => likePost(p.id)}
+              name="heart-outline"
+            ></ion-icon>
+            <p>{p.likeCount}</p>
+          </User>
+          {loadingState ? (
+            <LoadingContainer>
+              <ThreeCircles
+                height="100"
+                width="100"
+                color="#4fa94d"
+                wrapperStyle={{}}
+                wrapperClass=""
+                visible={true}
+                ariaLabel="three-circles-rotating"
+                outerCircleColor=""
+                innerCircleColor=""
+                middleCircleColor=""
+              />
+            </LoadingContainer>
+          ) : (
+            <LinkDescription>
+              <Description>
+                <h2>{userInformation.name}</h2>
+                <ReactTagify
+                  colors={"white"}
+                  tagClicked={(tag) => navigateToHashtag(tag)}
+                >
+                  <h3>{p.text}</h3>
+                </ReactTagify>
 
-        const likeBody = { postId: postId}
-        postLike(likeBody, config);
-
-    }
-    function navigateToHashtag(tag){
-       navigate(`/hashtags/${tag.substring(1)}`)
-    }
-
-    if(p.userId === userInformation.id){
-        return(
-            <ContainerPost>
-                <User>
-                    <img src={userInformation.photo} alt="Foto de usuário"/>
-                    <ion-icon onClick={()=>likePost(p.id)} name="heart-outline"></ion-icon>
-                    <p>{p.likeCount}</p>
-                </User>
-                <LinkDescription>
-                    <Description>
-                        <h2>{userInformation.name}</h2>
-                        <ReactTagify colors={"white"} tagClicked={(tag)=> navigateToHashtag(tag)}  >
-                            
-                            <h3>{p.text}</h3>
-                        </ReactTagify>
-                        
-
-                        <Icon>
-                            <ion-icon name="trash-outline"></ion-icon>
-                            <ion-icon name="brush-outline"></ion-icon>
-                        </Icon> 
-                    </Description>
-                    <UrlLink></UrlLink>
-                </LinkDescription>
-            </ContainerPost>
-        )
-    }else{
-        return (
-            <ContainerPost>
-                <User>
-                    <img />
-                    <ion-icon name="heart-outline"></ion-icon>
-                    <p></p>
-                </User>
-                <LinkDescription>
-                    <Description>
-                        <h2>{userInformation.name}</h2>
-                        <ReactTagify colors={"white"} tagClicked={(tag)=> navigateToHashtag(tag)}><h3>{p.text}</h3></ReactTagify>
-                        
-                    </Description>
-                    <UrlLink></UrlLink>
-                </LinkDescription>
-            </ContainerPost>
-        )
-    }
-}
+                <Icon>
+                  <ion-icon
+                    name="trash-outline"
+                    onClick={() => setOpenModal(true)}
+                  ></ion-icon>
+                  <ion-icon
+                    name="brush-outline"
+                    onClick={() => updateIcon()}
+                  ></ion-icon>
+                </Icon>
+              </Description>
+              <UrlLink></UrlLink>
+            </LinkDescription>
+          )}
+        </ContainerPost>
+        {openModal && (
+          <Modal
+            setOpenModal={setOpenModal}
+            deleteIcon={deleteIcon}
+            id={p.id}
+          />
+        )}
+      </>
+    );
+  } else {
+    return (
+      <>
+        <ContainerPost>
+          <User>
+            <img />
+            <ion-icon name="heart-outline"></ion-icon>
+            <p></p>
+          </User>
+          <LinkDescription>
+            <Description>
+              <h2>{userInformation.name}</h2>
+              <ReactTagify
+                colors={"white"}
+                tagClicked={(tag) => navigateToHashtag(tag)}
+              >
+                <h3>{p.text}</h3>
+              </ReactTagify>
+            </Description>
+            <UrlLink></UrlLink>
+          </LinkDescription>
+        </ContainerPost>
+        {openModal && <Modal setOpenModal={setOpenModal} />}
+      </>
+    );
+  }
+};
 
 const ContainerPost = styled.div`
-box-sizing:border-box;
+  box-sizing: border-box;
   width: 611px;
   min-height: 276px;
   display: flex;
@@ -121,7 +162,7 @@ box-sizing:border-box;
   justify-content: space-between;
   background: #171717;
   border-radius: 16px;
-margin-bottom:16px;
+  margin-bottom: 16px;
 `;
 
 const User = styled.div`
@@ -142,12 +183,12 @@ const User = styled.div`
     height: 25px;
     color: white;
     margin: 5px;
-      :hover{
-        cursor: pointer  
+    :hover {
+      cursor: pointer;
     }
-}
-  
-p {
+  }
+
+  p {
     font-family: "Lato";
     font-style: normal;
     font-weight: 400;
@@ -158,7 +199,7 @@ p {
 `;
 
 const LinkDescription = styled.div`
-box-sizing:border-box;
+  box-sizing: border-box;
   width: 503px;
   height: 250px;
 `;
@@ -209,17 +250,17 @@ const Icon = styled.div`
 `;
 
 const UrlLink = styled.div`
-  box-sizing:border-box;  
-width: 503px;
+  box-sizing: border-box;
+  width: 503px;
   height: 155px;
   background-color: red;
   border: 1px solid #4d4d4d;
   border-radius: 11px;
 `;
 
-const LoadingIcon = styled.div`
+const LoadingContainer = styled.div`
+  width: 503px;
   display: flex;
   justify-content: center;
   align-items: center;
-  
 `;

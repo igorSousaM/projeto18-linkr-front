@@ -1,7 +1,9 @@
 import axios from "axios";
 
 
-const APIprefix = "https://api-linkr-back.onrender.com ";
+const APIprefix = "https://api-linkr-back.onrender.com";
+//const APIprefix = "https://localshost/5000";
+
 
 function postPosts(body, config) {
   return axios.post(`${APIprefix}/posts`, body, config);
