@@ -57,7 +57,6 @@ export const Timeline = () => {
         setText("");
       })
       .catch((err) => {
-      alert(config.headers.Authorization)
         console.log(err);
         alert("Houve um erro ao publicar seu link");
         setLoadingState(false);

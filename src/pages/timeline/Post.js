@@ -8,7 +8,7 @@ import { deletePost } from "../../servers/PostsServices";
 import { ThreeCircles } from "react-loader-spinner";
 import Modal from "../../components/nav/Modal";
 
-export const Post = ({ p }) => {
+export const Post = ({ p,setRenderFlag,renderFlag }) => {
   const navigate = useNavigate();
 
   const { userInformation } = React.useContext(AuthContext);
@@ -32,6 +32,7 @@ export const Post = ({ p }) => {
       .then(() => {
         setLoadingState(false);
         setOpenModal(false);
+        setRenderFlag(!renderFlag)
       })
       .catch((err) => {
         console.log(err);
@@ -59,6 +60,7 @@ export const Post = ({ p }) => {
     const likeBody = { postId: postId };
     postLike(likeBody, config);
   }
+  
   function navigateToHashtag(tag) {
     navigate(`/hashtags/${tag.substring(1)}`);
   }
@@ -242,8 +244,8 @@ const Icon = styled.div`
   right: 20px;
   top: 0;
   ion-icon {
-    width: 25px;
-    height: 25px;
+    width: 20px;
+    height: 20px;
     color: white;
     margin: 5px;
   }
