@@ -7,9 +7,9 @@ import { AuthContext } from "../../providers/Context";
 
 export const ListPost = ( createPost ) => {
     
-    const { userInformation } = React.useContext(AuthContext);
-    const [posts, setPosts] = useState();
-    
+    const { userInformation, posts, setPosts } = React.useContext(AuthContext);
+  
+   
     let token = localStorage.getItem("tokenLikr");
     token = JSON.parse(token);
 
@@ -22,15 +22,15 @@ export const ListPost = ( createPost ) => {
     };
 
     useEffect(() => {
-        getPosts(config)
-         .then((response) => {
+        const userMe = getPosts(config);
+        userMe.then((response) => {
             setPosts(response.data);
           })
          .catch((err) => {
             console.log(err);
-            alert("An error occured while trying to fetch the posts, please refresh the page");
+           
           });
-    }, [createPost]);
+    }, []);
 
     if(posts === undefined){
         return <ContainerCarregamento><img src="https://miro.medium.com/max/1400/1*e_Loq49BI4WmN7o9ItTADg.gif"/></ContainerCarregamento>
@@ -42,6 +42,7 @@ export const ListPost = ( createPost ) => {
 
     return (
         <List>
+             
             {posts.map((p, index) =>
                 <Post
                 p={p}
