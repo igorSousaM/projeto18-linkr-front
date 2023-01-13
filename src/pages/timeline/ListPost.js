@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getPosts } from "../../servers/PostsServices";
 import { Post } from "./Post";
 import { AuthContext } from "../../providers/Context";
+import { render } from "@testing-library/react";
 
 
 export const ListPost = ( createPost ) => {
