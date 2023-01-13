@@ -1,7 +1,6 @@
 import axios from "axios";
-const APIprefix = "http://localhost:5000";
-//const APIprefix = "https://api-linkr-back.onrender.com";
 
+const APIprefix = "https://api-linkr-back.onrender.com";
 
 function postSignup(signup) {
  

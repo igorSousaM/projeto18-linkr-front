@@ -11,13 +11,7 @@ import Modal from "../../components/nav/Modal";
 export const Post = ({ p,setRenderFlag,renderFlag }) => {
   const navigate = useNavigate();
 
-
-export const Post = ({ p }) => {
-  const navigate = useNavigate();
-
-  const { userInformation, posts, setPosts } = React.useContext(AuthContext);
-  //console.log(posts)
-
+  const { userInformation } = React.useContext(AuthContext);
   let token = localStorage.getItem("tokenLikr");
   token = JSON.parse(token);
 
@@ -66,94 +60,24 @@ export const Post = ({ p }) => {
     const likeBody = { postId: postId };
     postLike(likeBody, config);
   }
-
-  function navigateToHashtag(tag) {
-    navigate(`/hashtags/${tag.substring(1)}`);
-  }
-  let postLink = p.link;
-  postLink = JSON.parse(postLink);
-  const { metadata } = postLink;
-  console.log(postLink);
-  if (p.userId === userInformation.id) {
-    return (
-      <ContainerPost>
-        <User>
-          <img src={userInformation.photo} alt="Foto de usuário" />
-          <ion-icon
-            onClick={() => likePost(p.id)}
-            name="heart-outline"
-          ></ion-icon>
-          <p>{p.likeCount}</p>
-        </User>
-        <LinkDescription>
-          <Description>
-            <h2>{userInformation.name}</h2>
-            <ReactTagify
-              colors={"white"}
-              tagClicked={(tag) => navigateToHashtag(tag)}
-            >
-              <h3>{p.text}</h3>
-            </ReactTagify>
-
-            <Icon>
-              <ion-icon name="trash-outline"></ion-icon>
-              <ion-icon name="brush-outline"></ion-icon>
-            </Icon>
-          </Description>
-          <UrlLink>
-            <div>
-              <h3>{metadata.title}</h3>
-              <p>{metadata.description}</p>
-              <h4>{metadata.website}</h4>
-            </div>
-
-            <img src={metadata.banner} className="banner" />
-          </UrlLink>
-        </LinkDescription>
-      </ContainerPost>
-    );
-  } else {
-    return (
-      <ContainerPost>
-        <User>
-          <img src={userInformation.photo} alt="Foto de usuário" />
-          <ion-icon name="heart-outline"></ion-icon>
-          <p></p>
-        </User>
-        <LinkDescription>
-          <Description>
-            <h2>{userInformation.name}</h2>
-            <ReactTagify
-              colors={"white"}
-              tagClicked={(tag) => navigateToHashtag(tag)}
-            >
-              <h3>{p.text}</h3>
-            </ReactTagify>
-          </Description>
-          <UrlLink></UrlLink>
-        </LinkDescription>
-      </ContainerPost>
-  function navigateToHashtag(tag) {
-    navigate(`/hashtags/${tag.substring(1)}`);
-  }
-  let postLink = p.link;
-  postLink = JSON.parse(postLink);
-  const { metadata } = postLink;
-  console.log(postLink);
   
+  function navigateToHashtag(tag) {
+    navigate(`/hashtags/${tag.substring(1)}`);
+  }
+
   if (p.userId === userInformation.id) {
     return (
-        <>
-      <ContainerPost>
-        <User>
-          <img src={userInformation.photo} alt="Foto de usuário" />
-          <ion-icon
-            onClick={() => likePost(p.id)}
-            name="heart-outline"
-          ></ion-icon>
-          <p>{p.likeCount}</p>
-        </User>
-        {loadingState ? (
+      <>
+        <ContainerPost>
+          <User>
+            <img src={userInformation.photo} alt="Foto de usuário" />
+            <ion-icon
+              onClick={() => likePost(p.id)}
+              name="heart-outline"
+            ></ion-icon>
+            <p>{p.likeCount}</p>
+          </User>
+          {loadingState ? (
             <LoadingContainer>
               <ThreeCircles
                 height="100"
@@ -169,40 +93,32 @@ export const Post = ({ p }) => {
               />
             </LoadingContainer>
           ) : (
-        <LinkDescription>
-          <Description>
-            <h2>{userInformation.name}</h2>
-            <ReactTagify
-              colors={"white"}
-              tagClicked={(tag) => navigateToHashtag(tag)}
-            >
-              <h3>{p.text}</h3>
-            </ReactTagify>
+            <LinkDescription>
+              <Description>
+                <h2>{userInformation.name}</h2>
+                <ReactTagify
+                  colors={"white"}
+                  tagClicked={(tag) => navigateToHashtag(tag)}
+                >
+                  <h3>{p.text}</h3>
+                </ReactTagify>
 
-            <Icon>
-              <ion-icon 
-                name="trash-outline"  
-                onClick={() => setOpenModal(true)}
-              ></ion-icon>
-              <ion-icon 
-              name="brush-outline" 
-              onClick={() => updateIcon()}    
-              ></ion-icon>
-            </Icon>
-          </Description>
-          <UrlLink>
-            <div>
-              <h3>{metadata.title}</h3>
-              <p>{metadata.description}</p>
-              <h4>{metadata.website}</h4>
-            </div>
-
-            <img src={metadata.banner} className="banner" />
-          </UrlLink>
-        </LinkDescription>
-        )}
-      </ContainerPost>
-      {openModal && (
+                <Icon>
+                  <ion-icon
+                    name="trash-outline"
+                    onClick={() => setOpenModal(true)}
+                  ></ion-icon>
+                  <ion-icon
+                    name="brush-outline"
+                    onClick={() => updateIcon()}
+                  ></ion-icon>
+                </Icon>
+              </Description>
+              <UrlLink></UrlLink>
+            </LinkDescription>
+          )}
+        </ContainerPost>
+        {openModal && (
           <Modal
             setOpenModal={setOpenModal}
             deleteIcon={deleteIcon}
@@ -213,25 +129,28 @@ export const Post = ({ p }) => {
     );
   } else {
     return (
-      <ContainerPost>
-        <User>
-          <img src={userInformation.photo} alt="Foto de usuário" />
-          <ion-icon name="heart-outline"></ion-icon>
-          <p></p>
-        </User>
-        <LinkDescription>
-          <Description>
-            <h2>{userInformation.name}</h2>
-            <ReactTagify
-              colors={"white"}
-              tagClicked={(tag) => navigateToHashtag(tag)}
-            >
-              <h3>{p.text}</h3>
-            </ReactTagify>
-          </Description>
-          <UrlLink></UrlLink>
-        </LinkDescription>
-      </ContainerPost>
+      <>
+        <ContainerPost>
+          <User>
+            <img />
+            <ion-icon name="heart-outline"></ion-icon>
+            <p></p>
+          </User>
+          <LinkDescription>
+            <Description>
+              <h2>{userInformation.name}</h2>
+              <ReactTagify
+                colors={"white"}
+                tagClicked={(tag) => navigateToHashtag(tag)}
+              >
+                <h3>{p.text}</h3>
+              </ReactTagify>
+            </Description>
+            <UrlLink></UrlLink>
+          </LinkDescription>
+        </ContainerPost>
+        {openModal && <Modal setOpenModal={setOpenModal} />}
+      </>
     );
   }
 };
@@ -239,15 +158,13 @@ export const Post = ({ p }) => {
 const ContainerPost = styled.div`
   box-sizing: border-box;
   width: 611px;
-  min-height: 246px;
+  min-height: 276px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   background: #171717;
   border-radius: 16px;
   margin-bottom: 16px;
-  padding: 20px;
-
 `;
 
 const User = styled.div`
@@ -256,9 +173,8 @@ const User = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
- 
   img {
-    width: 50px;
+    min-width: 50px;
     height: 50px;
     margin: 5px;
     background: url(image);
@@ -288,15 +204,9 @@ const LinkDescription = styled.div`
   box-sizing: border-box;
   width: 503px;
   height: 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
 `;
 
 const Description = styled.div`
-
   width: 503px;
   height: 80px;
   display: flex;
@@ -343,52 +253,11 @@ const Icon = styled.div`
 
 const UrlLink = styled.div`
   box-sizing: border-box;
-
   width: 503px;
-  min-height: 155px;
-  display: flex;
-
+  height: 155px;
+  background-color: red;
   border: 1px solid #4d4d4d;
   border-radius: 11px;
-  padding: 10px;
-  div {
-  
-    display: flex;
-    flex-direction: column;
-    gap: 13px;
-  }
-  h3 {
-    font-family: "Lato";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-  }
-  p {
-    font-family: "Lato";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 11px;
-    line-height: 13px;
-    color: #9b9595;
-  }
-  h4 {
-    font-family: "Lato";
-    font-style: normal;
-    font-weight: 400;
-    font-size: 11px;
-    line-height: 13px;
-    color: #cecece;
-  }
-
-  color: #cecece;
-  img {
-    min-width: 130.44px;
-    min-height: 100px;
-    background: url(image.png);
-    border-radius: 0px 12px 13px 0px;
-    padding: 5px;
-  }
 `;
 
 const LoadingContainer = styled.div`
