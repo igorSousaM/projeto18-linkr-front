@@ -8,7 +8,7 @@ import { deletePost } from "../../servers/PostsServices";
 import { ThreeCircles } from "react-loader-spinner";
 import Modal from "../../components/nav/Modal";
 
-export const Post = ({ p,setRenderFlag,renderFlag }) => {
+export const Post = ({ p, setRenderFlag, renderFlag }) => {
   const navigate = useNavigate();
 
   const { userInformation } = React.useContext(AuthContext);
@@ -32,7 +32,7 @@ export const Post = ({ p,setRenderFlag,renderFlag }) => {
       .then(() => {
         setLoadingState(false);
         setOpenModal(false);
-        setRenderFlag(!renderFlag)
+        setRenderFlag(!renderFlag);
       })
       .catch((err) => {
         console.log(err);
@@ -40,10 +40,6 @@ export const Post = ({ p,setRenderFlag,renderFlag }) => {
         setLoadingState(false);
         alert("Houve um erro ao deletar seu post");
       });
-  }
-
-  function updateIcon() {
-    alert("atualizar apertado!");
   }
 
   async function likePost(postId) {
@@ -60,7 +56,7 @@ export const Post = ({ p,setRenderFlag,renderFlag }) => {
     const likeBody = { postId: postId };
     postLike(likeBody, config);
   }
-  
+
   function navigateToHashtag(tag) {
     navigate(`/hashtags/${tag.substring(1)}`);
   }
@@ -107,10 +103,6 @@ export const Post = ({ p,setRenderFlag,renderFlag }) => {
                   <ion-icon
                     name="trash-outline"
                     onClick={() => setOpenModal(true)}
-                  ></ion-icon>
-                  <ion-icon
-                    name="brush-outline"
-                    onClick={() => updateIcon()}
                   ></ion-icon>
                 </Icon>
               </Description>
